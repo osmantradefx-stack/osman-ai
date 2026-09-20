@@ -1,889 +1,483 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
-
-    <title>Osman AI</title>
-
-    <style>
-        :root {
-            --bg: #212121;
-            --sidebar: #171717;
-            --sidebar-hover: #2a2a2a;
-            --border: #303030;
-            --text: #ececec;
-            --muted: #9b9b9b;
-            --input: #2f2f2f;
-            --accent: #6d5dfc;
-            --accent-hover: #8174ff;
-            --user-bubble: #303030;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family:
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                Roboto,
-                Helvetica,
-                Arial,
-                sans-serif;
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        button,
-        textarea {
-            font: inherit;
-        }
-
-        /* =========================
-           APP
-        ========================= */
-
-        .app {
-            display: flex;
-            width: 100%;
-            height: 100dvh;
-            background: var(--bg);
-        }
-
-        /* =========================
-           SIDEBAR
-        ========================= */
-
-        .sidebar {
-            width: 260px;
-            height: 100%;
-            background: var(--sidebar);
-            border-right: 1px solid #252525;
-            display: flex;
-            flex-direction: column;
-            padding: 12px;
-            flex-shrink: 0;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            padding: 4px 6px 18px;
-        }
-
-        .brand-logo {
-            width: 150px;
-            height: auto;
-            display: block;
-            object-fit: contain;
-            border-radius: 16px;
-        }
-
-        .new-chat {
-            width: 100%;
-            border: 1px solid #3a3a3a;
-            background: transparent;
-            color: var(--text);
-            border-radius: 10px;
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: 0.2s ease;
-            margin-bottom: 20px;
-        }
-
-        .new-chat:hover {
-            background: var(--sidebar-hover);
-        }
-
-        .new-chat-icon {
-            font-size: 21px;
-            line-height: 1;
-            font-weight: 300;
-        }
-
-        .sidebar-label {
-            color: #777;
-            font-size: 12px;
-            padding: 0 8px;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-        }
-
-        .sidebar-info {
-            color: #777;
-            font-size: 13px;
-            line-height: 1.5;
-            padding: 8px;
-        }
-
-        .sidebar-bottom {
-            margin-top: auto;
-            border-top: 1px solid #282828;
-            padding-top: 14px;
-        }
-
-        .powered {
-            color: #666;
-            font-size: 11px;
-            padding: 8px;
-        }
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .main {
-            flex: 1;
-            min-width: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* =========================
-           TOP BAR
-        ========================= */
-
-        .topbar {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            padding: 0 22px;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            flex-shrink: 0;
-        }
-
-        .mobile-menu {
-            display: none;
-            width: 38px;
-            height: 38px;
-            border: 0;
-            background: transparent;
-            color: var(--text);
-            font-size: 23px;
-            cursor: pointer;
-            margin-right: 8px;
-        }
-
-        .model-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #ddd;
-        }
-
-        .model-status {
-            margin-left: 8px;
-            color: #777;
-            font-size: 12px;
-        }
-
-        /* =========================
-           CHAT AREA
-        ========================= */
-
-        .chat-area {
-            flex: 1;
-            min-height: 0;
-            overflow-y: auto;
-            scroll-behavior: smooth;
-        }
-
-        #chat-messages {
-            width: 100%;
-            max-width: 850px;
-            margin: 0 auto;
-            padding: 30px 24px 170px;
-        }
-
-        /* =========================
-           WELCOME
-        ========================= */
-
-        .welcome {
-            min-height: calc(100dvh - 250px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 30px 10px;
-        }
-
-        .welcome-content {
-            max-width: 650px;
-        }
-
-        .welcome-logo {
-            width: 110px;
-            height: 110px;
-            object-fit: cover;
-            border-radius: 28px;
-            margin-bottom: 24px;
-            box-shadow:
-                0 0 35px rgba(83, 100, 255, 0.15);
-        }
-
-        .welcome h1 {
-            margin: 0 0 12px;
-            font-size: 32px;
-            font-weight: 600;
-            letter-spacing: -0.03em;
-        }
-
-        .welcome p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 15px;
-            line-height: 1.6;
-        }
-
-        /* =========================
-           MESSAGE DESIGN
-        ========================= */
-
-        .message {
-            display: flex;
-            width: 100%;
-            margin: 20px 0;
-            line-height: 1.65;
-            font-size: 15px;
-        }
-
-        .message.user {
-            justify-content: flex-end;
-        }
-
-        .message.user .message-content {
-            max-width: 75%;
-            background: var(--user-bubble);
-            padding: 10px 16px;
-            border-radius: 18px;
-            border-bottom-right-radius: 5px;
-        }
-
-        .message.assistant {
-            justify-content: flex-start;
-        }
-
-        .message.assistant .message-content {
-            width: 100%;
-            max-width: 100%;
-            padding: 4px 0;
-        }
-
-        .message-role {
-            display: none;
-        }
-
-        /* =========================
-           TYPING
-        ========================= */
-
-        #typing-indicator {
-            display: none;
-            padding: 8px 0 20px;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-
-        .typing-dots span {
-            width: 7px;
-            height: 7px;
-            background: #888;
-            border-radius: 50%;
-            animation: typing 1.2s infinite ease-in-out;
-        }
-
-        .typing-dots span:nth-child(2) {
-            animation-delay: 0.15s;
-        }
-
-        .typing-dots span:nth-child(3) {
-            animation-delay: 0.3s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-                opacity: 0.35;
-            }
-
-            30% {
-                transform: translateY(-4px);
-                opacity: 1;
-            }
-        }
-
-        /* =========================
-           COMPOSER
-        ========================= */
-
-        .composer-wrapper {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 20px 24px 24px;
-            background: linear-gradient(
-                to top,
-                var(--bg) 70%,
-                transparent
-            );
-        }
-
-        .composer {
-            width: 100%;
-            max-width: 850px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .input-box {
-            display: flex;
-            align-items: flex-end;
-            gap: 8px;
-            background: var(--input);
-            border: 1px solid #414141;
-            border-radius: 26px;
-            padding: 8px 8px 8px 17px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.18);
-            transition: border-color 0.2s ease;
-        }
-
-        .input-box:focus-within {
-            border-color: #555;
-        }
-
-        #user-input {
-            flex: 1;
-            min-width: 0;
-            resize: none;
-            border: 0;
-            outline: 0;
-            background: transparent;
-            color: var(--text);
-            font-size: 15px;
-            line-height: 1.5;
-            max-height: 180px;
-            padding: 9px 2px;
-        }
-
-        #user-input::placeholder {
-            color: #888;
-        }
-
-        #send-button {
-            width: 38px;
-            height: 38px;
-            border: 0;
-            border-radius: 50%;
-            background: #ececec;
-            color: #171717;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            font-size: 19px;
-            font-weight: 600;
-            transition: 0.2s ease;
-        }
-
-        #send-button:hover {
-            transform: scale(1.04);
-            background: white;
-        }
-
-        #send-button:active {
-            transform: scale(0.95);
-        }
-
-        .composer-hint {
-            text-align: center;
-            color: #777;
-            font-size: 11px;
-            margin-top: 8px;
-        }
-
-        /* =========================
-           SCROLLBAR
-        ========================= */
-
-        .chat-area::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .chat-area::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .chat-area::-webkit-scrollbar-thumb {
-            background: #444;
-            border-radius: 10px;
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 760px) {
-
-            .sidebar {
-                display: none;
-            }
-
-            .mobile-menu {
-                display: block;
-            }
-
-            .topbar {
-                height: 56px;
-                padding: 0 12px;
-            }
-
-            .model-name {
-                font-size: 14px;
-            }
-
-            #chat-messages {
-                padding: 20px 16px 155px;
-            }
-
-            .welcome {
-                min-height: calc(100dvh - 210px);
-                padding: 20px;
-            }
-
-            .welcome-logo {
-                width: 90px;
-                height: 90px;
-                border-radius: 23px;
-            }
-
-            .welcome h1 {
-                font-size: 27px;
-            }
-
-            .welcome p {
-                font-size: 14px;
-            }
-
-            .message.user .message-content {
-                max-width: 88%;
-            }
-
-            .composer-wrapper {
-                padding:
-                    12px
-                    12px
-                    calc(12px + env(safe-area-inset-bottom));
-            }
-
-            .composer-hint {
-                display: none;
-            }
-
-            .input-box {
-                border-radius: 23px;
-                padding-left: 14px;
-            }
-        }
-
-        /* =========================
-           VERY SMALL PHONES
-        ========================= */
-
-        @media (max-width: 380px) {
-
-            .welcome h1 {
-                font-size: 24px;
-            }
-
-            .welcome p {
-                font-size: 13px;
-            }
-
-            #chat-messages {
-                padding-left: 12px;
-                padding-right: 12px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Osman AI</title>
+
+<link rel="icon" href="/logo.png">
+
+<style>
+:root{
+    --bg:#212121;
+    --sidebar:#171717;
+    --surface:#2f2f2f;
+    --border:#3d3d3d;
+    --text:#ececec;
+    --muted:#9ca3af;
+    --blue:#3b82f6;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+
+    background:var(--bg);
+    color:var(--text);
+    overflow:hidden;
+}
+
+/* APP */
+
+.app{
+    display:flex;
+    height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+    width:260px;
+    background:var(--sidebar);
+    border-right:1px solid #2c2c2c;
+    display:flex;
+    flex-direction:column;
+    transition:0.3s;
+}
+
+.sidebar-header{
+    padding:15px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.brand img{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.brand-name{
+    font-weight:700;
+    font-size:16px;
+}
+
+.new-chat{
+    margin:15px;
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:transparent;
+    color:white;
+    cursor:pointer;
+}
+
+.new-chat:hover{
+    background:#2d2d2d;
+}
+
+.sidebar-footer{
+    margin-top:auto;
+    padding:15px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+/* MAIN */
+
+.main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+/* TOP */
+
+.topbar{
+    height:60px;
+    border-bottom:1px solid #2c2c2c;
+    display:flex;
+    align-items:center;
+    padding:0 16px;
+    gap:15px;
+}
+
+.menu-btn{
+    display:none;
+    font-size:24px;
+    background:none;
+    border:none;
+    color:white;
+}
+
+.top-logo{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+}
+
+.online{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:#22c55e;
+    display:inline-block;
+    margin-left:8px;
+}
+
+/* CHAT */
+
+.chat-container{
+    flex:1;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+}
+
+.chat-messages{
+    flex:1;
+    overflow-y:auto;
+    padding:30px 20px 150px;
+}
+
+.chat-inner{
+    max-width:760px;
+    margin:auto;
+}
+
+/* WELCOME */
+
+.welcome{
+    min-height:60vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.welcome-logo{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    margin-bottom:20px;
+}
+
+.welcome h1{
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.welcome p{
+    color:var(--muted);
+    max-width:500px;
+}
+
+/* MESSAGES */
+
+.message{
+    margin-bottom:25px;
+}
+
+.message p{
+    line-height:1.7;
+    white-space:pre-wrap;
+}
+
+.user-message{
+    display:flex;
+    justify-content:flex-end;
+}
+
+.user-message p{
+    background:#303030;
+    padding:12px 16px;
+    border-radius:20px;
+    max-width:75%;
+}
+
+.assistant-message{
+    display:flex;
+    gap:15px;
+}
+
+.assistant-message::before{
+    content:"";
+    width:32px;
+    height:32px;
+    border-radius:8px;
+    background-image:url('/logo.png');
+    background-size:cover;
+    flex-shrink:0;
+}
+
+/* INPUT */
+
+.message-input{
+    position:fixed;
+    bottom:0;
+    left:260px;
+    right:0;
+    padding:20px;
+    background:
+    linear-gradient(
+        transparent,
+        var(--bg) 30%
+    );
+}
+
+.input-box{
+    max-width:760px;
+    margin:auto;
+    display:flex;
+    align-items:flex-end;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:8px;
+}
+
+#user-input{
+    flex:1;
+    background:transparent;
+    border:none;
+    outline:none;
+    resize:none;
+    color:white;
+    padding:12px;
+    max-height:150px;
+    font-size:15px;
+}
+
+#send-button{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:50%;
+    background:white;
+    color:black;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.typing-indicator{
+    display:none;
+    max-width:760px;
+    margin:auto;
+    color:var(--muted);
+    padding-bottom:10px;
+}
+
+.typing-indicator.visible{
+    display:block;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.sidebar{
+    position:fixed;
+    z-index:100;
+    left:-260px;
+    height:100%;
+}
+
+.sidebar.open{
+    left:0;
+}
+
+.menu-btn{
+    display:block;
+}
+
+.message-input{
+    left:0;
+}
+
+.chat-messages{
+    padding:20px 10px 140px;
+}
+
+.welcome h1{
+    font-size:25px;
+}
+
+}
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-    <!-- =========================
-         SIDEBAR
-    ========================== -->
+<!-- SIDEBAR -->
 
-    <aside class="sidebar">
+<div class="sidebar" id="sidebar">
 
-        <div class="brand">
-            <img
-                src="/osman-ai-logo.png"
-                alt="Osman AI"
-                class="brand-logo"
-            >
-        </div>
+<div class="sidebar-header">
 
-        <button
-            class="new-chat"
-            id="new-chat"
-            type="button"
-        >
-            <span class="new-chat-icon">＋</span>
-            <span>New chat</span>
-        </button>
-
-        <div class="sidebar-label">
-            Osman AI
-        </div>
-
-        <div class="sidebar-info">
-            Your personal AI assistant for
-            coding, technology, business,
-            education and more.
-        </div>
-
-        <div class="sidebar-bottom">
-            <div class="powered">
-                Powered by Workers AI
-            </div>
-        </div>
-
-    </aside>
-
-
-    <!-- =========================
-         MAIN
-    ========================== -->
-
-    <main class="main">
-
-        <!-- TOP BAR -->
-
-        <header class="topbar">
-
-            <button
-                class="mobile-menu"
-                id="mobile-menu"
-                type="button"
-                aria-label="Open menu"
-            >
-                ☰
-            </button>
-
-            <span class="model-name">
-                Osman AI
-            </span>
-
-            <span class="model-status">
-                AI Assistant
-            </span>
-
-        </header>
-
-
-        <!-- CHAT -->
-
-        <section
-            class="chat-area"
-            id="chat-area"
-        >
-
-            <div id="chat-messages">
-
-                <!-- Welcome screen -->
-
-                <div
-                    class="welcome"
-                    id="welcome"
-                >
-
-                    <div class="welcome-content">
-
-                        <img
-                            src="/osman-ai-logo.png"
-                            alt="Osman AI"
-                            class="welcome-logo"
-                        >
-
-                        <h1>
-                            How can I help you today?
-                        </h1>
-
-                        <p>
-                            Ask Osman AI anything about coding,
-                            technology, business, education,
-                            trading concepts and more.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Typing indicator -->
-
-                <div
-                    id="typing-indicator"
-                >
-                    <div class="typing-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             MESSAGE INPUT
-        ========================== -->
-
-        <div class="composer-wrapper">
-
-            <div class="composer">
-
-                <div class="input-box">
-
-                    <textarea
-                        id="user-input"
-                        rows="1"
-                        placeholder="Message Osman AI..."
-                        autocomplete="off"
-                    ></textarea>
-
-                    <button
-                        id="send-button"
-                        type="button"
-                        aria-label="Send message"
-                    >
-                        ↑
-                    </button>
-
-                </div>
-
-                <div class="composer-hint">
-                    Osman AI can make mistakes. Check important information.
-                </div>
-
-            </div>
-
-        </div>
-
-    </main>
+<div class="brand">
+<img src="/logo.png" alt="Osman AI">
+<div class="brand-name">
+Osman AI
+</div>
+</div>
 
 </div>
 
+<button class="new-chat" id="new-chat">
+＋ New Chat
+</button>
 
-<!-- =========================
-     EXISTING CLOUDFLARE CHAT
-     JAVASCRIPT
-========================== -->
+<div class="sidebar-footer">
+Osman AI • Personal Assistant
+</div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="topbar">
+
+<button class="menu-btn" id="menu-btn">
+☰
+</button>
+
+<img src="/logo.png" class="top-logo">
+
+<div>
+Osman AI
+<span class="online"></span>
+</div>
+
+</div>
+
+<div class="chat-container">
+
+<div class="chat-messages" id="chat-messages">
+
+<div class="chat-inner">
+
+<div class="welcome">
+
+<img src="/logo.png" class="welcome-logo">
+
+<h1>
+How can I help you today?
+</h1>
+
+<p>
+I'm Osman AI, your personal AI assistant.
+Ask me anything.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="typing-indicator" id="typing-indicator">
+Osman AI is thinking...
+</div>
+
+<div class="message-input">
+
+<div class="input-box">
+
+<textarea
+id="user-input"
+placeholder="Message Osman AI..."
+rows="1"></textarea>
+
+<button id="send-button">
+↑
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 <script src="chat.js"></script>
 
-
-<!-- =========================
-     UI ENHANCEMENTS
-========================== -->
-
 <script>
-    /*
-     * Auto-resize the message textarea.
-     */
 
-    const textarea = document.getElementById("user-input");
+/* MOBILE MENU */
 
-    if (textarea) {
-        textarea.addEventListener("input", function () {
+const menuBtn =
+document.getElementById("menu-btn");
 
-            this.style.height = "auto";
+const sidebar =
+document.getElementById("sidebar");
 
-            this.style.height =
-                Math.min(this.scrollHeight, 180) + "px";
+menuBtn.addEventListener(
+"click",
+()=>{
+sidebar.classList.toggle("open");
+}
+);
 
-        });
-    }
+/* NEW CHAT */
 
+document
+.getElementById("new-chat")
+.addEventListener(
+"click",
+()=>{
 
-    /*
-     * Press Enter to send.
-     * Shift + Enter creates a new line.
-     */
+document
+.getElementById("chat-messages")
+.innerHTML=
+`
+<div class="chat-inner">
 
-    if (textarea) {
-        textarea.addEventListener("keydown", function (event) {
+<div class="welcome">
 
-            if (
-                event.key === "Enter" &&
-                !event.shiftKey
-            ) {
-                event.preventDefault();
+<img src="/logo.png"
+class="welcome-logo">
 
-                const sendButton =
-                    document.getElementById("send-button");
+<h1>
+How can I help you today?
+</h1>
 
-                if (sendButton) {
-                    sendButton.click();
-                }
-            }
+<p>
+I'm Osman AI,
+your personal AI assistant.
+</p>
 
-        });
-    }
+</div>
 
+</div>
+`;
 
-    /*
-     * New Chat button.
-     */
+}
+);
 
-    const newChat =
-        document.getElementById("new-chat");
-
-    if (newChat) {
-
-        newChat.addEventListener("click", function () {
-
-            const messages =
-                document.getElementById("chat-messages");
-
-            if (!messages) return;
-
-            messages.innerHTML = `
-                <div
-                    class="welcome"
-                    id="welcome"
-                >
-                    <div class="welcome-content">
-
-                        <img
-                            src="/osman-ai-logo.png"
-                            alt="Osman AI"
-                            class="welcome-logo"
-                        >
-
-                        <h1>
-                            How can I help you today?
-                        </h1>
-
-                        <p>
-                            Ask Osman AI anything about coding,
-                            technology, business, education,
-                            trading concepts and more.
-                        </p>
-
-                    </div>
-                </div>
-
-                <div id="typing-indicator">
-                    <div class="typing-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                </div>
-            `;
-
-            if (textarea) {
-                textarea.value = "";
-                textarea.style.height = "auto";
-                textarea.focus();
-            }
-
-        });
-
-    }
-
-
-    /*
-     * Mobile menu.
-     * This keeps the interface simple on small screens.
-     */
-
-    const mobileMenu =
-        document.getElementById("mobile-menu");
-
-    if (mobileMenu) {
-
-        mobileMenu.addEventListener("click", function () {
-
-            const sidebar =
-                document.querySelector(".sidebar");
-
-            if (!sidebar) return;
-
-            const visible =
-                sidebar.style.display === "flex";
-
-            sidebar.style.display =
-                visible ? "none" : "flex";
-
-            if (!visible) {
-
-                sidebar.style.position = "absolute";
-                sidebar.style.zIndex = "100";
-                sidebar.style.left = "0";
-                sidebar.style.top = "0";
-                sidebar.style.bottom = "0";
-                sidebar.style.boxShadow =
-                    "10px 0 40px rgba(0,0,0,0.4)";
-            }
-
-        });
-
-    }
-
-
-    /*
-     * Keep chat scrolled toward the latest message.
-     */
-
-    const chatArea =
-        document.getElementById("chat-area");
-
-    if (chatArea) {
-
-        const observer =
-            new MutationObserver(function () {
-
-                chatArea.scrollTop =
-                    chatArea.scrollHeight;
-
-            });
-
-        observer.observe(chatArea, {
-            childList: true,
-            subtree: true
-        });
-
-    }
 </script>
 
 </body>
