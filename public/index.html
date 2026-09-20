@@ -1,442 +1,531 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
 
     <title>Osman AI</title>
 
     <style>
         :root {
-            --bg: #070b14;
-            --panel: #0d1422;
-            --panel-2: #111a2b;
-            --border: #1d2a40;
-            --blue: #2388ff;
-            --blue-hover: #1675e8;
-            --text: #f5f7fb;
-            --muted: #8995aa;
-            --user: #176ee6;
-            --assistant: #151f31;
+            --bg: #212121;
+            --sidebar: #171717;
+            --sidebar-hover: #2a2a2a;
+            --border: #303030;
+            --text: #ececec;
+            --muted: #9b9b9b;
+            --input: #2f2f2f;
+            --accent: #6d5dfc;
+            --accent-hover: #8174ff;
+            --user-bubble: #303030;
         }
 
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         html,
         body {
+            margin: 0;
+            padding: 0;
             width: 100%;
             height: 100%;
-        }
-
-        body {
+            overflow: hidden;
             font-family:
                 -apple-system,
                 BlinkMacSystemFont,
                 "Segoe UI",
                 Roboto,
+                Helvetica,
                 Arial,
                 sans-serif;
-
             background: var(--bg);
             color: var(--text);
         }
 
-        /* APP */
+        button,
+        textarea {
+            font: inherit;
+        }
+
+        /* =========================
+           APP
+        ========================= */
 
         .app {
-            width: 100%;
-            height: 100vh;
             display: flex;
-            flex-direction: column;
+            width: 100%;
+            height: 100dvh;
             background: var(--bg);
         }
 
-        /* HEADER */
+        /* =========================
+           SIDEBAR
+        ========================= */
 
-        .header {
-            height: 64px;
-            flex-shrink: 0;
-
+        .sidebar {
+            width: 260px;
+            height: 100%;
+            background: var(--sidebar);
+            border-right: 1px solid #252525;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 0 16px;
-
-            background: rgba(13, 20, 34, 0.96);
-            border-bottom: 1px solid var(--border);
+            flex-direction: column;
+            padding: 12px;
+            flex-shrink: 0;
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 11px;
+            padding: 4px 6px 18px;
         }
 
-        .logo {
-            width: 40px;
-            height: 40px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            background: var(--blue);
-
-            font-size: 20px;
-        }
-
-        .brand-text h1 {
-            font-size: 17px;
-            font-weight: 700;
-        }
-
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-
-            margin-top: 2px;
-
-            color: var(--muted);
-            font-size: 11px;
-        }
-
-        .online {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #22c55e;
+        .brand-logo {
+            width: 150px;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            border-radius: 16px;
         }
 
         .new-chat {
-            border: 1px solid var(--border);
-            background: var(--panel-2);
+            width: 100%;
+            border: 1px solid #3a3a3a;
+            background: transparent;
             color: var(--text);
-
-            padding: 8px 11px;
-            border-radius: 9px;
-
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             cursor: pointer;
+            transition: 0.2s ease;
+            margin-bottom: 20px;
+        }
+
+        .new-chat:hover {
+            background: var(--sidebar-hover);
+        }
+
+        .new-chat-icon {
+            font-size: 21px;
+            line-height: 1;
+            font-weight: 300;
+        }
+
+        .sidebar-label {
+            color: #777;
+            font-size: 12px;
+            padding: 0 8px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .sidebar-info {
+            color: #777;
+            font-size: 13px;
+            line-height: 1.5;
+            padding: 8px;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            border-top: 1px solid #282828;
+            padding-top: 14px;
+        }
+
+        .powered {
+            color: #666;
+            font-size: 11px;
+            padding: 8px;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* =========================
+           TOP BAR
+        ========================= */
+
+        .topbar {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 22px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            flex-shrink: 0;
+        }
+
+        .mobile-menu {
+            display: none;
+            width: 38px;
+            height: 38px;
+            border: 0;
+            background: transparent;
+            color: var(--text);
+            font-size: 23px;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        .model-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #ddd;
+        }
+
+        .model-status {
+            margin-left: 8px;
+            color: #777;
             font-size: 12px;
         }
 
-        .new-chat:active {
-            transform: scale(0.96);
-        }
+        /* =========================
+           CHAT AREA
+        ========================= */
 
-        /* CHAT */
-
-        .chat-container {
+        .chat-area {
             flex: 1;
             min-height: 0;
-
-            display: flex;
-            flex-direction: column;
-
-            max-width: 900px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .chat-messages {
-            flex: 1;
-            min-height: 0;
-
             overflow-y: auto;
-
-            padding: 25px 16px 120px;
-            background: var(--bg);
+            scroll-behavior: smooth;
         }
 
-        /* WELCOME */
+        #chat-messages {
+            width: 100%;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px 24px 170px;
+        }
+
+        /* =========================
+           WELCOME
+        ========================= */
 
         .welcome {
-            min-height: 60%;
-
+            min-height: calc(100dvh - 250px);
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-
             text-align: center;
+            padding: 30px 10px;
+        }
 
-            padding: 30px 20px;
+        .welcome-content {
+            max-width: 650px;
         }
 
         .welcome-logo {
-            width: 72px;
-            height: 72px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 22px;
-
-            background: var(--blue);
-
-            font-size: 34px;
-
-            margin-bottom: 18px;
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 28px;
+            margin-bottom: 24px;
+            box-shadow:
+                0 0 35px rgba(83, 100, 255, 0.15);
         }
 
-        .welcome h2 {
-            font-size: 26px;
-            margin-bottom: 8px;
+        .welcome h1 {
+            margin: 0 0 12px;
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -0.03em;
         }
 
         .welcome p {
-            max-width: 420px;
-
+            margin: 0;
             color: var(--muted);
-            font-size: 14px;
+            font-size: 15px;
             line-height: 1.6;
         }
 
-        /* MESSAGES */
+        /* =========================
+           MESSAGE DESIGN
+        ========================= */
 
         .message {
             display: flex;
-            gap: 10px;
-
-            margin-bottom: 20px;
-
-            animation: appear 0.2s ease;
+            width: 100%;
+            margin: 20px 0;
+            line-height: 1.65;
+            font-size: 15px;
         }
 
-        @keyframes appear {
-            from {
-                opacity: 0;
-                transform: translateY(5px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message p {
-            white-space: pre-line;
-            overflow-wrap: anywhere;
-            line-height: 1.6;
-        }
-
-        .message::before {
-            width: 34px;
-            height: 34px;
-            min-width: 34px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            font-size: 16px;
-        }
-
-        .assistant-message::before {
-            content: "🤖";
-            background: var(--blue);
-        }
-
-        .user-message {
+        .message.user {
             justify-content: flex-end;
         }
 
-        .user-message::before {
-            content: "👤";
-            order: 2;
-            background: #293447;
+        .message.user .message-content {
+            max-width: 75%;
+            background: var(--user-bubble);
+            padding: 10px 16px;
+            border-radius: 18px;
+            border-bottom-right-radius: 5px;
         }
 
-        .message p {
-            max-width: min(75%, 650px);
-
-            padding: 12px 15px;
-
-            border-radius: 15px;
-
-            font-size: 14px;
+        .message.assistant {
+            justify-content: flex-start;
         }
 
-        .assistant-message p {
-            background: var(--assistant);
-            border-top-left-radius: 5px;
-        }
-
-        .user-message p {
-            order: 1;
-
-            background: var(--user);
-
-            border-top-right-radius: 5px;
-        }
-
-        /* TYPING */
-
-        .typing-indicator {
-            display: none;
-
-            max-width: 900px;
+        .message.assistant .message-content {
             width: 100%;
-
-            margin: 0 auto;
-
-            padding: 0 16px 10px;
-
-            color: var(--muted);
-            font-size: 12px;
+            max-width: 100%;
+            padding: 4px 0;
         }
 
-        .typing-indicator.visible {
-            display: block;
+        .message-role {
+            display: none;
         }
 
-        /* INPUT */
+        /* =========================
+           TYPING
+        ========================= */
 
-        .message-input {
-            position: fixed;
+        #typing-indicator {
+            display: none;
+            padding: 8px 0 20px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .typing-dots span {
+            width: 7px;
+            height: 7px;
+            background: #888;
+            border-radius: 50%;
+            animation: typing 1.2s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.35;
+            }
+
+            30% {
+                transform: translateY(-4px);
+                opacity: 1;
+            }
+        }
+
+        /* =========================
+           COMPOSER
+        ========================= */
+
+        .composer-wrapper {
+            position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-
-            display: flex;
-            gap: 8px;
-
-            padding: 12px;
-
+            padding: 20px 24px 24px;
             background: linear-gradient(
-                transparent,
-                var(--bg) 25%
+                to top,
+                var(--bg) 70%,
+                transparent
             );
         }
 
-        .input-box {
+        .composer {
             width: 100%;
-            max-width: 900px;
-
+            max-width: 850px;
             margin: 0 auto;
+            position: relative;
+        }
 
+        .input-box {
             display: flex;
+            align-items: flex-end;
             gap: 8px;
+            background: var(--input);
+            border: 1px solid #414141;
+            border-radius: 26px;
+            padding: 8px 8px 8px 17px;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.18);
+            transition: border-color 0.2s ease;
+        }
 
-            padding: 7px;
-
-            background: var(--panel);
-            border: 1px solid var(--border);
-
-            border-radius: 15px;
-
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        .input-box:focus-within {
+            border-color: #555;
         }
 
         #user-input {
             flex: 1;
-
-            border: none;
-            outline: none;
-
+            min-width: 0;
             resize: none;
-
-            min-height: 42px;
-            max-height: 140px;
-
-            padding: 11px 12px;
-
+            border: 0;
+            outline: 0;
             background: transparent;
-
             color: var(--text);
-
-            font-family: inherit;
-            font-size: 14px;
+            font-size: 15px;
+            line-height: 1.5;
+            max-height: 180px;
+            padding: 9px 2px;
         }
 
         #user-input::placeholder {
-            color: #69758a;
+            color: #888;
         }
 
         #send-button {
-            width: 44px;
-            height: 44px;
-
-            flex-shrink: 0;
-
-            border: none;
-            border-radius: 11px;
-
-            background: var(--blue);
-            color: white;
-
-            font-size: 19px;
-            font-weight: bold;
-
+            width: 38px;
+            height: 38px;
+            border: 0;
+            border-radius: 50%;
+            background: #ececec;
+            color: #171717;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            flex-shrink: 0;
+            font-size: 19px;
+            font-weight: 600;
+            transition: 0.2s ease;
         }
 
         #send-button:hover {
-            background: var(--blue-hover);
+            transform: scale(1.04);
+            background: white;
         }
 
-        #send-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        #send-button:active {
+            transform: scale(0.95);
         }
 
-        /* FOOTER */
-
-        footer {
-            display: none;
+        .composer-hint {
+            text-align: center;
+            color: #777;
+            font-size: 11px;
+            margin-top: 8px;
         }
 
-        /* MOBILE */
+        /* =========================
+           SCROLLBAR
+        ========================= */
 
-        @media (max-width: 600px) {
+        .chat-area::-webkit-scrollbar {
+            width: 8px;
+        }
 
-            .header {
-                height: 60px;
+        .chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-area::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 10px;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 760px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .topbar {
+                height: 56px;
                 padding: 0 12px;
             }
 
-            .logo {
-                width: 36px;
-                height: 36px;
-                font-size: 18px;
-            }
-
-            .brand-text h1 {
-                font-size: 16px;
-            }
-
-            .chat-messages {
-                padding: 20px 12px 115px;
-            }
-
-            .message p {
-                max-width: 82%;
+            .model-name {
                 font-size: 14px;
             }
 
+            #chat-messages {
+                padding: 20px 16px 155px;
+            }
+
+            .welcome {
+                min-height: calc(100dvh - 210px);
+                padding: 20px;
+            }
+
             .welcome-logo {
-                width: 64px;
-                height: 64px;
-                font-size: 30px;
+                width: 90px;
+                height: 90px;
+                border-radius: 23px;
             }
 
-            .welcome h2 {
-                font-size: 23px;
+            .welcome h1 {
+                font-size: 27px;
             }
 
-            .new-chat {
-                padding: 7px 9px;
+            .welcome p {
+                font-size: 14px;
+            }
+
+            .message.user .message-content {
+                max-width: 88%;
+            }
+
+            .composer-wrapper {
+                padding:
+                    12px
+                    12px
+                    calc(12px + env(safe-area-inset-bottom));
+            }
+
+            .composer-hint {
+                display: none;
+            }
+
+            .input-box {
+                border-radius: 23px;
+                padding-left: 14px;
+            }
+        }
+
+        /* =========================
+           VERY SMALL PHONES
+        ========================= */
+
+        @media (max-width: 380px) {
+
+            .welcome h1 {
+                font-size: 24px;
+            }
+
+            .welcome p {
+                font-size: 13px;
+            }
+
+            #chat-messages {
+                padding-left: 12px;
+                padding-right: 12px;
             }
         }
     </style>
@@ -446,27 +535,18 @@
 
 <div class="app">
 
-    <!-- HEADER -->
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
 
-    <header class="header">
+    <aside class="sidebar">
 
         <div class="brand">
-
-            <div class="logo">
-                🤖
-            </div>
-
-            <div class="brand-text">
-
-                <h1>Osman AI</h1>
-
-                <div class="status">
-                    <span class="online"></span>
-                    Online
-                </div>
-
-            </div>
-
+            <img
+                src="/osman-ai-logo.png"
+                alt="Osman AI"
+                class="brand-logo"
+            >
         </div>
 
         <button
@@ -474,124 +554,336 @@
             id="new-chat"
             type="button"
         >
-            + New chat
+            <span class="new-chat-icon">＋</span>
+            <span>New chat</span>
         </button>
 
-    </header>
+        <div class="sidebar-label">
+            Osman AI
+        </div>
+
+        <div class="sidebar-info">
+            Your personal AI assistant for
+            coding, technology, business,
+            education and more.
+        </div>
+
+        <div class="sidebar-bottom">
+            <div class="powered">
+                Powered by Workers AI
+            </div>
+        </div>
+
+    </aside>
 
 
-    <!-- CHAT -->
+    <!-- =========================
+         MAIN
+    ========================== -->
 
-    <div class="chat-container">
+    <main class="main">
 
-        <div
-            id="chat-messages"
-            class="chat-messages"
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <button
+                class="mobile-menu"
+                id="mobile-menu"
+                type="button"
+                aria-label="Open menu"
+            >
+                ☰
+            </button>
+
+            <span class="model-name">
+                Osman AI
+            </span>
+
+            <span class="model-status">
+                AI Assistant
+            </span>
+
+        </header>
+
+
+        <!-- CHAT -->
+
+        <section
+            class="chat-area"
+            id="chat-area"
         >
 
-            <div class="welcome" id="welcome">
+            <div id="chat-messages">
 
-                <div class="welcome-logo">
-                    🤖
+                <!-- Welcome screen -->
+
+                <div
+                    class="welcome"
+                    id="welcome"
+                >
+
+                    <div class="welcome-content">
+
+                        <img
+                            src="/osman-ai-logo.png"
+                            alt="Osman AI"
+                            class="welcome-logo"
+                        >
+
+                        <h1>
+                            How can I help you today?
+                        </h1>
+
+                        <p>
+                            Ask Osman AI anything about coding,
+                            technology, business, education,
+                            trading concepts and more.
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <h2>Welcome to Osman AI</h2>
 
-                <p>
-                    Your personal AI assistant for coding,
-                    business, learning, technology and more.
-                </p>
+                <!-- Typing indicator -->
 
-            </div>
-
-        </div>
-
-
-        <div
-            class="typing-indicator"
-            id="typing-indicator"
-        >
-            Osman AI is thinking...
-        </div>
-
-
-        <!-- INPUT -->
-
-        <div class="message-input">
-
-            <div class="input-box">
-
-                <textarea
-                    id="user-input"
-                    placeholder="Ask Osman AI..."
-                    rows="1"
-                    autofocus
-                ></textarea>
-
-                <button
-                    id="send-button"
-                    type="button"
-                    aria-label="Send message"
+                <div
+                    id="typing-indicator"
                 >
-                    ➤
-                </button>
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             MESSAGE INPUT
+        ========================== -->
+
+        <div class="composer-wrapper">
+
+            <div class="composer">
+
+                <div class="input-box">
+
+                    <textarea
+                        id="user-input"
+                        rows="1"
+                        placeholder="Message Osman AI..."
+                        autocomplete="off"
+                    ></textarea>
+
+                    <button
+                        id="send-button"
+                        type="button"
+                        aria-label="Send message"
+                    >
+                        ↑
+                    </button>
+
+                </div>
+
+                <div class="composer-hint">
+                    Osman AI can make mistakes. Check important information.
+                </div>
 
             </div>
 
         </div>
 
-    </div>
-
-
-    <footer>
-        Osman AI
-    </footer>
+    </main>
 
 </div>
 
 
-<!-- KEEP THE ORIGINAL CHAT ENGINE -->
+<!-- =========================
+     EXISTING CLOUDFLARE CHAT
+     JAVASCRIPT
+========================== -->
 
 <script src="chat.js"></script>
 
-<script>
 
+<!-- =========================
+     UI ENHANCEMENTS
+========================== -->
+
+<script>
     /*
-     * New chat button
-     * This only clears the visible conversation.
+     * Auto-resize the message textarea.
      */
 
-    const newChatButton =
+    const textarea = document.getElementById("user-input");
+
+    if (textarea) {
+        textarea.addEventListener("input", function () {
+
+            this.style.height = "auto";
+
+            this.style.height =
+                Math.min(this.scrollHeight, 180) + "px";
+
+        });
+    }
+
+
+    /*
+     * Press Enter to send.
+     * Shift + Enter creates a new line.
+     */
+
+    if (textarea) {
+        textarea.addEventListener("keydown", function (event) {
+
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
+                event.preventDefault();
+
+                const sendButton =
+                    document.getElementById("send-button");
+
+                if (sendButton) {
+                    sendButton.click();
+                }
+            }
+
+        });
+    }
+
+
+    /*
+     * New Chat button.
+     */
+
+    const newChat =
         document.getElementById("new-chat");
 
-    const chatMessages =
-        document.getElementById("chat-messages");
+    if (newChat) {
 
-    const welcomeHTML = `
-        <div class="welcome" id="welcome">
+        newChat.addEventListener("click", function () {
 
-            <div class="welcome-logo">
-                🤖
-            </div>
+            const messages =
+                document.getElementById("chat-messages");
 
-            <h2>Welcome to Osman AI</h2>
+            if (!messages) return;
 
-            <p>
-                Your personal AI assistant for coding,
-                business, learning, technology and more.
-            </p>
+            messages.innerHTML = `
+                <div
+                    class="welcome"
+                    id="welcome"
+                >
+                    <div class="welcome-content">
 
-        </div>
-    `;
+                        <img
+                            src="/osman-ai-logo.png"
+                            alt="Osman AI"
+                            class="welcome-logo"
+                        >
 
-    newChatButton.addEventListener("click", () => {
+                        <h1>
+                            How can I help you today?
+                        </h1>
 
-        chatMessages.innerHTML = welcomeHTML;
+                        <p>
+                            Ask Osman AI anything about coding,
+                            technology, business, education,
+                            trading concepts and more.
+                        </p>
 
-        document.getElementById("user-input").focus();
+                    </div>
+                </div>
 
-    });
+                <div id="typing-indicator">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
 
+            if (textarea) {
+                textarea.value = "";
+                textarea.style.height = "auto";
+                textarea.focus();
+            }
+
+        });
+
+    }
+
+
+    /*
+     * Mobile menu.
+     * This keeps the interface simple on small screens.
+     */
+
+    const mobileMenu =
+        document.getElementById("mobile-menu");
+
+    if (mobileMenu) {
+
+        mobileMenu.addEventListener("click", function () {
+
+            const sidebar =
+                document.querySelector(".sidebar");
+
+            if (!sidebar) return;
+
+            const visible =
+                sidebar.style.display === "flex";
+
+            sidebar.style.display =
+                visible ? "none" : "flex";
+
+            if (!visible) {
+
+                sidebar.style.position = "absolute";
+                sidebar.style.zIndex = "100";
+                sidebar.style.left = "0";
+                sidebar.style.top = "0";
+                sidebar.style.bottom = "0";
+                sidebar.style.boxShadow =
+                    "10px 0 40px rgba(0,0,0,0.4)";
+            }
+
+        });
+
+    }
+
+
+    /*
+     * Keep chat scrolled toward the latest message.
+     */
+
+    const chatArea =
+        document.getElementById("chat-area");
+
+    if (chatArea) {
+
+        const observer =
+            new MutationObserver(function () {
+
+                chatArea.scrollTop =
+                    chatArea.scrollHeight;
+
+            });
+
+        observer.observe(chatArea, {
+            childList: true,
+            subtree: true
+        });
+
+    }
 </script>
 
 </body>
